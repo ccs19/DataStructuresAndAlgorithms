@@ -7,7 +7,30 @@ public class LinkedList<T> implements Iterable<T>{
     private Node<T> head;
     private Node<T> tail;
 
+    public LinkedList(){
 
+    }
+
+    public LinkedList(Node<T> node){
+        head = node;
+        while(node != null){
+            tail = node;
+            node = node.getNext();
+        }
+    }
+
+    public void add(Node<T> node){
+        if(head == null){
+            head = node;
+        }
+        tail.setNext(node);
+        tail = node;
+    }
+
+    public void addToHead(Node<T> node){
+        node.setNext(head);
+        head = node;
+    }
 
     public void add(T... item){
         for(T i : item) {
@@ -40,10 +63,22 @@ public class LinkedList<T> implements Iterable<T>{
     @Override
     public String toString(){
         StringBuilder sb = new StringBuilder();
-        for(T item : this){
-            sb.append(item + " ");
+        Node<T> current = head;
+        while(current != null){
+
+            sb.append(current.getItem() + " -> ");
+            if(current == tail && current.getNext() != null) {
+                sb.append(current.getNext().getItem() + " loop");
+                break;
+            }
+            current = current.getNext();
+
         }
-        return sb.toString();
+        String result = sb.toString();
+        if(result.length() >= 4) {
+            return result.substring(0, result.length() - 4);
+        }
+        return "empty";
     }
 
     public class LinkedListIterator implements Iterator<T>{
