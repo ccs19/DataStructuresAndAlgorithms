@@ -281,7 +281,7 @@ public class ChapterTwo {
 
     /**
      * CTCI 2.8 Loop detection
-     * See if a linked list has a loop.
+     * Check if a LinkedList has a loop, and if so return the node that begins the loop
      */
     public Node<Integer> linkedListLoopCheck(LinkedList<Integer> ll){
         Node<Integer> current = ll.getHead();
