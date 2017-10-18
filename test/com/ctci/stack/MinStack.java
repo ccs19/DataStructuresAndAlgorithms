@@ -57,18 +57,34 @@ public class MinStack {
     /**
      * CTCI 3.5
      * Sort stack where smallest items are on top
-     * Come back to this tomorrow.
+     * //Terrible runtime. Can be improved. Not feeling up to it today.
      */
     public void sortStack(){
         MinStack tempStack = new MinStack(size);
         tempStack.push(this.pop());
-        while(!this.isEmpty()){
-            int temp = tempStack.pop();
-  //          while(tempStack.peek() > )
+        boolean changed = true;
+        while(changed) {
+            changed = false;
+            while (!this.isEmpty()) {
+                int temp = this.peek();
+                if (temp < tempStack.peek()) {
+                    temp = tempStack.pop();
+                    tempStack.push(this.pop());
+                    tempStack.push(temp);
+                    changed = true;
+                }else{
+                    tempStack.push(this.pop());
+                }
+            }
+            while(!tempStack.isEmpty()){
+                this.push(tempStack.pop());
+            }
+            if(changed){
+                System.out.println(this);
+                tempStack.push(this.pop());
+            }
         }
-        while(!tempStack.isEmpty()){
-            this.push(tempStack.pop());
-        }
+
     }
 
     public boolean isEmpty(){
