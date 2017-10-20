@@ -3,23 +3,52 @@ package com.ctci;
 import  com.ctci.stack.ArrayTripleStack;
 import com.ctci.stack.MinStack;
 import com.ctci.stack.QueueStack;
+import com.ctci.stack.animalshelter.Animal;
+import com.ctci.stack.animalshelter.AnimalShelter;
+import com.ctci.stack.animalshelter.AnimalType;
 import org.junit.jupiter.api.Test;
 import static com.ctci.stack.ArrayTripleStack.*;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class ChapterThree {
 
 
     /**
-     * CTCI 3.5 test sort stack
+     * CTCI 3.6 Animal Shelter
      */
     @Test
+    public void testAnimalShelter(){
+        AnimalShelter a = new AnimalShelter();
+        assertNull(a.dequeue());
+        assertNull(a.dequeueCat());
+        assertNull(a.dequeueDog());
+        a.enqueue(Animal.generate(AnimalType.DOG, "Rusty1"));
+        a.enqueue(Animal.generate(AnimalType.CAT, "Mittens1"));
+        a.enqueue(Animal.generate(AnimalType.DOG, "Rusty2"));
+        a.enqueue(Animal.generate(AnimalType.CAT, "Mittens2"));
+        a.enqueue(Animal.generate(AnimalType.CAT, "Mittens3"));
+        a.enqueue(Animal.generate(AnimalType.DOG, "Rusty3"));
+        a.enqueue(Animal.generate(AnimalType.CAT, "Mittens4"));
+        System.out.println(a.dequeue());
+        System.out.println(a.dequeueDog());
+        System.out.println(a.dequeue());
+        System.out.println(a.dequeue());
+        System.out.println(a.dequeueCat());
+        System.out.println(a.dequeue());
+
+    }
+
+    /**
+     * CTCI 3.5 test sort stack
+     */
+   /** @Test
     public void testSortStack(){
         MinStack stack = new MinStack(10);
         stack.push(5,1,0,1,2,4,8,12);
         stack.sortStack();
         System.out.println(stack);
 
-    }
+    }**/
 
     /**
      * CTCI 3.4 Queue using two stacks
