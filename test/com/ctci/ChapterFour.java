@@ -108,29 +108,46 @@ public class ChapterFour {
      */
     private LinkedList<Integer>[] listOfDepths(TreeNode<Integer> root){
         if(root == null) return null;
-        return null;
+        Map<Integer,LinkedList<Integer>> map = new HashMap<>();
+        traverseListOfDepths(root,map);
+        return map.values().toArray(new LinkedList[0]);
     }
 
-    @Test
-    public void testListOfDepths(){
-
+    private void traverseListOfDepths(TreeNode<Integer> root, Map<Integer, LinkedList<Integer>> map) {
+        traverseDepth(root,map,0);
     }
 
-
-    @Test
-    public void testSomething(){
-        int[] values = new int[]{0,1,2,3,4,5,6,7,8,9,10,11,12,13,14};
-        TreeNode<Integer> root = sort(values);
-        LinkedList<Integer>[] lists = listOfDepths(root);
-        for(LinkedList<Integer> list : lists){
-            for(Integer i : list){
-                System.out.println(i + " --> ");
-            }
+    private void traverseDepth(TreeNode<Integer> root, Map<Integer, LinkedList<Integer>> map, int i) {
+        if(root == null) return;
+        LinkedList<Integer> list;
+        if(map.containsKey(i)){
+            list = map.get(i);
+        }else{
+            list = new LinkedList<>();
+            map.put(i,list);
         }
+        list.add(root.value);
+        traverseDepth(root.left, map, i+1);
+        traverseDepth(root.right, map, i+1);
     }
 
     /**
      *
+    @Test
+    public void testListOfDepths(){
+        int[] values = new int[]{0,1,2,3,4,5,6,7,8,9,10,11,12,13,14};
+        TreeNode<Integer> root = sort(values);
+        System.out.println(root);
+        LinkedList<Integer>[] lists = listOfDepths(root);
+        for(LinkedList<Integer> list : lists){
+            for(Integer i : list){
+                System.out.print(i + " --> ");
+            }
+            System.out.println();
+        }
+    }
+
+
     @Test
     public void testSortTree(){
         int[] values = new int[]{0,1,2,3,4,5,6,7,8,9,10,11,12,13,14};
