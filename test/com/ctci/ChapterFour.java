@@ -1,9 +1,6 @@
 package com.ctci;
 
-import com.ctci.graphs.Graph;
-import com.ctci.graphs.GraphBuilder;
-import com.ctci.graphs.Node;
-import com.ctci.graphs.TreeNode;
+import com.ctci.graphs.*;
 import org.junit.jupiter.api.Test;
 
 import java.util.*;
@@ -105,6 +102,8 @@ public class ChapterFour {
      * CTCI 4.3 List of Depths
      * Given a binary tree, create LinkedLists cotaining elements of each level.
      * e.g. a tree of depth D should return D linkedLists.
+     *
+     * //Could also be implemented with an ArrayList<LinkedList<Integer>> instead of hash map.
      */
     private LinkedList<Integer>[] listOfDepths(TreeNode<Integer> root){
         if(root == null) return null;
@@ -129,6 +128,125 @@ public class ChapterFour {
         list.add(root.value);
         traverseDepth(root.left, map, i+1);
         traverseDepth(root.right, map, i+1);
+    }
+
+
+    /**
+     * CTCI 4.4 Check Balanced
+     * Checks if a binary tree is balanced.
+     */
+    public boolean isBalanced(TreeNode<?> root){
+        return checkBalanced(root,0, new ArrayList<Integer>());
+    }
+
+    private boolean checkBalanced(TreeNode<?> root, int current, List<Integer> minMax) {
+        if(root == null){
+            current--;
+            if(minMax.size() == 2){
+                return minMax.get(0) == current || minMax.get(1) == current;
+            }else if(minMax.size() == 1){
+                if(current != minMax.get(0)){
+                    minMax.add(current);
+                }
+                int diff = Math.abs(minMax.get(0) - current);
+                return diff == 0 || diff == 1;
+            }else{
+                minMax.add(current);
+                return true;
+            }
+        }
+        if(!checkBalanced(root.left,current+1, minMax)) return false;
+        if(!checkBalanced(root.right, current+1, minMax)) return false;
+        return true;
+    }
+
+
+    /**
+     * CTCI 4.5
+     * Check if a binary tree is a binary search tree
+     *
+     */
+    //TODO Come back to this (_isBst)
+    public boolean isBst(TreeNode<Integer> root){
+        if(!checkLeft(root.left, root.value)) return false;
+        if(!checkRight(root.right, root.value)) return false;
+        return true;
+    }
+
+    static Integer lastPrinted = null;
+    public boolean _isBst(TreeNode<Integer> root){
+        if(root == null) return true;
+
+        if(!_isBst(root.left)) return false;
+        System.out.printf("%d <= %d\n", root.value, lastPrinted);
+        if(lastPrinted != null && root.value <= lastPrinted){
+            return false;
+        }
+        lastPrinted = root.value;
+        if(!_isBst(root.right)) return false;
+        return true;
+    }
+
+    private boolean checkLeft(TreeNode<Integer> node, int rootValue) {
+        if(node == null){
+            return true;
+        }
+        if(node.value > rootValue) return false;
+        if(!checkLeft(node.left, rootValue)) return false;
+        if(!checkLeft(node.right, rootValue)) return false;
+        return true;
+    }
+
+
+    private boolean checkRight(TreeNode<Integer> node, int value){
+        if(node == null){
+            return true;
+        }
+        if(node.value <= value) return false;
+        if(!checkRight(node.left, value)) return false;
+        if(!checkRight(node.right, value)) return false;
+        return true;
+    }
+
+    @Test
+    public void testIsBst(){
+        int[] values = new int[]{0,1,2,3,4,5,6,7,8,9,10,11,12,13,14};
+        TreeNode<Integer> root = sort(values);
+        //System.out.println(isBst(root));//true
+        System.out.println("!! " + _isBst(root));
+        System.out.println(root);
+        root.left.value = root.value;
+        lastPrinted = null;
+        //System.out.println(isBst(root));//false
+        System.out.println("!! " + _isBst(root)); //false
+        System.out.println(root);
+
+        root.right.value = root.value;
+        //System.out.println(isBst(root));//false
+
+        root = sort(values);
+        //System.out.println(isBst(root));//true
+
+        root.right.right.right.value = 6;
+        //System.out.println(isBst(root));//false
+    }
+
+/**
+    @Test
+    public void testIsBalanced(){
+        int[] values = new int[]{0,1,2,3,4,5,6,7,8,9,10,11,12,13,14};
+        TreeNode<Integer> root = sort(values);
+        System.out.println(isBalanced(root));
+        root.right.right = null;
+        root.right.left = null;
+        System.out.println(isBalanced(root));
+        root.right = null;
+        System.out.println(isBalanced(root));
+        //System.out.println(root);
+        root.left.left = null;
+        root.left.right = null;
+        System.out.println(isBalanced(root));
+        System.out.println(root);
     }
 
     /**

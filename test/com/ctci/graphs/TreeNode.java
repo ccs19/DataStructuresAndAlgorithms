@@ -4,6 +4,7 @@ public class TreeNode<T> {
     public T value;
     public TreeNode<T> left;
     public TreeNode<T> right;
+    public TreeNode<T> parent;
 
     public TreeNode(){}
 
@@ -17,11 +18,13 @@ public class TreeNode<T> {
         return printTree("", this, false, sb);
     }
 
+
+
     private String printTree(String prefix, TreeNode<T> t, boolean isLeft, StringBuilder sb) {
         if(t != null){
             sb.append(prefix + (isLeft ? "|-- " : "\\-- ") + t.value + "\n");
-            printTree(prefix + (isLeft ? "|   " : "    "), t.left, true, sb);
             printTree(prefix + (isLeft ? "|   " : "    "), t.right, true, sb);
+            printTree(prefix + (isLeft ? "|   " : "    "), t.left, false, sb);
         }
         return sb.toString();
 
