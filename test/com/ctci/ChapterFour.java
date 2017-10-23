@@ -80,6 +80,8 @@ public class ChapterFour {
 
         rootNode.left = leftNode;
         rootNode.right = rightNode;
+        if(leftNode != null) leftNode.parent = rootNode;
+        if(rightNode != null) rightNode.parent = rootNode;
         return rootNode;
     }
 
@@ -208,6 +210,58 @@ public class ChapterFour {
         return true;
     }
 
+    /**
+     * CTCI 4.6 Successor
+     * Find the successor node. IE the next node in a depth first search, given a node.
+     * //TODO Review solution
+     */
+    public TreeNode<Integer> findSuccessor(TreeNode<Integer> node){
+        TreeNode<Integer> successor = null;
+        if(node.left != null){
+            successor = traverseFindSuccessor(node.left);
+            if(successor != null) return successor;
+        }
+        if(node.right != null){
+            successor = traverseFindSuccessor(node.right);
+            if(successor != null) return successor;
+        }
+        if(node.parent.right != null){
+            return traverseFindSuccessor(node.parent.right);
+        }
+        return node.parent;
+
+    }
+
+    private TreeNode<Integer> traverseFindSuccessor(TreeNode<Integer> node) {
+        TreeNode<Integer> successor = null;
+        if(node.left != null){
+            successor = traverseFindSuccessor(node.left);
+        }
+        if(successor != null) return successor;
+        if(node.right != null) {
+            successor = traverseFindSuccessor(node.right);
+        }
+        return successor != null ? successor : node;
+
+    }
+
+    /
+
+
+    @Test
+    public void testFindSuccessor(){
+        int[] values = new int[]{0,1,2,3,4,5,6,7,8,9,10,11,12,13,14};
+        TreeNode<Integer> root = sort(values);
+      //  System.out.println(root);
+      //  System.out.println(findSuccessor(root.left.left));
+        root.left.left.left = null;
+        //System.out.println(findSuccessor(root.left.left));
+        root.left.left.right = null;
+        System.out.println(root);
+        System.out.println(findSuccessor(root.left.left));
+    }
+
+/**
     @Test
     public void testIsBst(){
         int[] values = new int[]{0,1,2,3,4,5,6,7,8,9,10,11,12,13,14};
@@ -231,7 +285,7 @@ public class ChapterFour {
         //System.out.println(isBst(root));//false
     }
 
-/**
+
     @Test
     public void testIsBalanced(){
         int[] values = new int[]{0,1,2,3,4,5,6,7,8,9,10,11,12,13,14};
