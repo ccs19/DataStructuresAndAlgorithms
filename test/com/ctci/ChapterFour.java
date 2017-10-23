@@ -1,6 +1,7 @@
 package com.ctci;
 
 import com.ctci.graphs.*;
+import javafx.util.Pair;
 import org.junit.jupiter.api.Test;
 
 import java.util.*;
@@ -245,7 +246,138 @@ public class ChapterFour {
 
     }
 
-    /
+    /**
+     * 4.7 Build Order
+     * Given a list of projects and dependencies (a pair, where the second project is dependent on the first)
+     * All project's dependencies must be built before the project is.
+     * Return a build order.
+     * e.g. input
+     * projects: a,b,c,d,e,f
+     * dependencies: (a,d), (f,b), (b,d), (f,a), (d,c)
+     *
+     * output: f,e,a,b,d,c
+     * Graph problem?
+     *
+     * Yes, graph problem.
+     * This solution is not optimal, and fails in there is a cycle in the graph.
+     * //TODO Review solution, do it proper with a graph.
+     */
+    public Character[] buildOrder(char[] projects, Pair<Character,Character>[] dependencies){
+        Collection<ProjectWeight> projectWeights = buildProjectWeights(projects,dependencies);
+        Character[] result = new Character[projects.length];
+        int endOfList = 0;
+        int desiredWeight = 0;
+        while(endOfList != projects.length){
+            endOfList = addProjects(result, projectWeights,endOfList, desiredWeight);
+            desiredWeight++;
+        }
+
+        return result;
+    }
+
+    private static class ProjectWeight{
+        char project;
+        List<ProjectWeight> parents = new ArrayList<ProjectWeight>();
+        public int getWeight(){
+            int weight = parents.size();
+            for(ProjectWeight pw : parents){
+                if(pw == this) throw new RuntimeException("Cycle found!");
+                weight += pw.getWeight();
+            }
+            return weight;
+        }
+
+        @Override
+        public String toString(){
+            return "project: " + project + ", weight: " + getWeight();
+        }
+    }
+
+    private int addProjects(Character[] result, Collection<ProjectWeight> projectWeights, int endOfList, int desiredWeight) {
+        for(ProjectWeight projectWeight : projectWeights){
+            if(projectWeight.getWeight() == desiredWeight){
+                result[endOfList++] = projectWeight.project;
+            }
+        }
+        return endOfList;
+    }
+
+    private Collection<ProjectWeight> buildProjectWeights(char[] projects, Pair<Character, Character>[] dependencies) {
+        Map<Character, ProjectWeight> map = new HashMap<>();
+        for(char p : projects){
+            ProjectWeight pw = new ProjectWeight();
+            pw.project = p;
+            map.put(p, pw);
+        }
+        for(Pair<Character,Character> pair : dependencies){
+            ProjectWeight child = map.get(pair.getValue());
+            ProjectWeight parent = map.get(pair.getKey());
+            child.parents.add(parent);
+        }
+        return map.values();
+    }
+
+    /**
+     * CTCI 4.8 Write code to find the first common ancestor of two nodes in a binary tree (What does this mean????)
+     * This is not necessarily a binary search tree.
+     */
+    public TreeNode<Integer> findFirstCommonAncestorWithRoot(TreeNode<Integer> root, TreeNode<Integer> nodeOne, TreeNode<Integer> nodeTwo){
+        if(isCollision(nodeOne,nodeTwo)){
+            return nodeTwo.left == null ? nodeTwo.right : nodeTwo.left;
+        }
+        if(isCollision(nodeTwo,nodeOne)){
+            return nodeOne.left == null ? nodeOne.right : nodeOne.left;
+        }
+        if(isCollision(root.right,nodeTwo)){
+            return nodeTwo.left == null ? nodeTwo.right : nodeTwo.left;
+        }
+        return nodeOne.left == null ? nodeOne.right : nodeOne.left;
+    }
+
+    private boolean isCollision(TreeNode<Integer> nodeOne, TreeNode<Integer> nodeTwo){
+        if(nodeOne == nodeTwo) return true;
+        if(nodeOne == null) return false;
+        if(isCollision(nodeOne.left, nodeTwo)){
+            return true;
+        }
+        if(isCollision(nodeOne.right, nodeTwo)){
+            return true;
+        }
+        return false;
+    }
+
+    @Test
+    public void testfindFirstCommonAncestorWithRoot(){
+        int[] values = new int[]{0,1,2,3,4,5,6,7,8,9,10,11,12,13,14};
+        TreeNode<Integer> root = sort(values);
+        System.out.println(findFirstCommonAncestorWithRoot(root, root.left, root.right.left));
+    }
+
+
+
+    /**
+    @Test
+    public void testBuildOrder(){
+        char[] projects = new char[]{'a','b','c','d','e','f'};
+        Pair<Character, Character>[] dependencies = buildPairs("a,d,f,b,b,d,f,a,d,c");
+        Character[] result = buildOrder(projects, dependencies);
+        for(Character c : result){
+            System.out.print(c+ ",");
+        }
+        System.out.println();
+    }
+
+    private Pair<Character,Character>[] buildPairs(String s) {
+        String[] split = s.split(",");
+        Pair<Character,Character>[] result = new Pair[split.length/2];
+        for(int i = 0; i < split.length/2; i++){
+            Pair<Character,Character> pair = new Pair<>(split[i*2].charAt(0), split[i*2+1].charAt(0));
+            result[i] = pair;
+        }
+        return result;
+    }
+
+
 
 
     @Test
@@ -261,7 +393,7 @@ public class ChapterFour {
         System.out.println(findSuccessor(root.left.left));
     }
 
-/**
+
     @Test
     public void testIsBst(){
         int[] values = new int[]{0,1,2,3,4,5,6,7,8,9,10,11,12,13,14};
