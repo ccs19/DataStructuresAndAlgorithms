@@ -318,20 +318,41 @@ public class ChapterFour {
     }
 
     /**
-     * CTCI 4.8 Write code to find the first common ancestor of two nodes in a binary tree (What does this mean????)
+     * CTCI 4.8 Write code to find the first common ancestor of two nodes in a binary tree
      * This is not necessarily a binary search tree.
      */
-    public TreeNode<Integer> findFirstCommonAncestorWithRoot(TreeNode<Integer> root, TreeNode<Integer> nodeOne, TreeNode<Integer> nodeTwo){
-        if(isCollision(nodeOne,nodeTwo)){
-            return nodeTwo.left == null ? nodeTwo.right : nodeTwo.left;
+    public TreeNode<Integer> findFirstCommonAncestorWithParents(TreeNode<Integer> nodeOne, TreeNode<Integer> nodeTwo){
+        int delta = depth(nodeOne) - depth(nodeTwo);
+        TreeNode<Integer> p = delta > 0 ? nodeTwo : nodeOne;    //shallow node
+        TreeNode<Integer> q = delta > 0 ? nodeOne : nodeTwo;    //deeper node
+
+        //Take deeper node up delta levels.
+        q = goUp(q, Math.abs(delta));
+        System.out.println(q);
+        System.out.println(p);
+        while(p != q && p != null && q != null){
+            p = p.parent;
+            q = q.parent;
         }
-        if(isCollision(nodeTwo,nodeOne)){
-            return nodeOne.left == null ? nodeOne.right : nodeOne.left;
+        return p == q ? p : null;
+    }
+
+    private TreeNode<Integer> goUp(TreeNode<Integer> q, int delta) {
+        if(q == null) return null;
+        while(delta != 0 && q != null){
+            q = q.parent;
+            delta--;
         }
-        if(isCollision(root.right,nodeTwo)){
-            return nodeTwo.left == null ? nodeTwo.right : nodeTwo.left;
+        return q;
+    }
+
+    private int depth(TreeNode<Integer> node) {
+        int depth = 0;
+        while(node != null){
+            node = node.parent;
+            depth++;
         }
-        return nodeOne.left == null ? nodeOne.right : nodeOne.left;
+        return depth;
     }
 
     private boolean isCollision(TreeNode<Integer> nodeOne, TreeNode<Integer> nodeTwo){
@@ -350,7 +371,8 @@ public class ChapterFour {
     public void testfindFirstCommonAncestorWithRoot(){
         int[] values = new int[]{0,1,2,3,4,5,6,7,8,9,10,11,12,13,14};
         TreeNode<Integer> root = sort(values);
-        System.out.println(findFirstCommonAncestorWithRoot(root, root.left, root.right.left));
+        System.out.println(root);
+        System.out.println(findFirstCommonAncestorWithParents(root.left.left, root.right.right.right));
     }
 
 
