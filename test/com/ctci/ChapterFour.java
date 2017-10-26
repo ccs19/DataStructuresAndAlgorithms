@@ -355,6 +355,7 @@ public class ChapterFour {
         return depth;
     }
 
+
     private boolean isCollision(TreeNode<Integer> nodeOne, TreeNode<Integer> nodeTwo){
         if(nodeOne == nodeTwo) return true;
         if(nodeOne == null) return false;
@@ -367,8 +368,40 @@ public class ChapterFour {
         return false;
     }
 
+    /**
+     * CTCI 4.8 Find first common ancestor.
+     * Same as before, except we are not able to use parent nodes.
+     */
+    public TreeNode<Integer> findFirstCommonAncestorNoParents(TreeNode<Integer> root, TreeNode<Integer> nodeOne, TreeNode<Integer> nodeTwo){
+        if(isCollision(nodeOne,nodeTwo)){
+            return findAncestor(root,nodeOne,null);
+        }
+        if(isCollision(nodeTwo,nodeOne)){
+            return findAncestor(root,nodeTwo,null);
+        }
+        else return root;
+    }
+
+    private TreeNode<Integer> findAncestor(TreeNode<Integer> root, TreeNode<Integer> node, TreeNode<Integer> parent) {
+        if(root == null) return null;
+        if(root == node) return parent;
+        TreeNode<Integer> result = findAncestor(root.left, node, root);
+        if(result != null) return result;
+        result = findAncestor(root.right, node, root);
+        return result;
+    }
+
+
     @Test
-    public void testfindFirstCommonAncestorWithRoot(){
+    public void testfindFirstCommonAncestorNoParent(){
+        int[] values = new int[]{0,1,2,3,4,5,6,7,8,9,10,11,12,13,14};
+        TreeNode<Integer> root = sort(values);
+        System.out.println(root);
+        System.out.println(findFirstCommonAncestorNoParents(root,root.left.left.left, root.left));
+    }
+/**
+    @Test
+    public void testfindFirstCommonAncestorWithParent(){
         int[] values = new int[]{0,1,2,3,4,5,6,7,8,9,10,11,12,13,14};
         TreeNode<Integer> root = sort(values);
         System.out.println(root);
@@ -377,7 +410,7 @@ public class ChapterFour {
 
 
 
-    /**
+
     @Test
     public void testBuildOrder(){
         char[] projects = new char[]{'a','b','c','d','e','f'};
