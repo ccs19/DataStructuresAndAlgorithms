@@ -2,6 +2,10 @@ package com.ctci;
 
 import org.junit.jupiter.api.Test;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+
 public class ChapterSixteen {
     /**
      * 16.1 Write a function to swap two numbers in place. (No temporary variables.)
@@ -23,9 +27,39 @@ public class ChapterSixteen {
     }
 
     /**
-     * 16.2 Design a method to find the frequency of occurences of any given word in a book.
+     * 16.2 Design a method to find the frequency of occurrences of any given word in a book.
      * What if we were running this algorithm multiple times? (Not sure what this means.)
      */
+    public int wordFrequency(String book, String word){
+        String[] split = book.split("\\s+|,\\s*|\\.\\s*|!\\s*|\"|;\\s*");
+        int count = 0;
+        for(String s : split){
+            if(s.equalsIgnoreCase(word)){
+                count++;
+            }
+        }
+        return count;
+    }
+
+    public String readFile(String fileName){
+
+        try {
+            File file = new File(fileName);
+            FileInputStream fis = new FileInputStream(file);
+            byte[] data = new byte[(int)file.length()];
+            fis.read(data);
+            fis.close();
+            return new String(data, "UTF-8");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Test
+    public void testWordFrequency(){
+        String word = readFile("./resources/alice.txt");
+        System.out.printf("Alice found %d times\n", wordFrequency(word,"Alice"));
+    }
 
 /**
     @Test
