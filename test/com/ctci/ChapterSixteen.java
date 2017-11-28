@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.math.BigDecimal;
 
 public class ChapterSixteen {
     /**
@@ -55,13 +56,80 @@ public class ChapterSixteen {
         }
     }
 
+    /**
+     * 16.3 Intersection
+     * Given two straight lines, represented as a start and end point, compute the point of the intersection
+     */
+    public Point determineIntersection(Line lineOne, Line lineTwo){
+        if(lineOne.slope.equals(lineTwo.slope)){
+            return null;
+        }
+        
+        return null;
+    }
+
+    public static class Line{
+        Point start;
+        Point end;
+        BigDecimal slope;
+        BigDecimal yIntercept;
+
+        public Line(int startX, int startY, int endX, int endY){
+            start = new Point(startX,startY);
+            end = new Point(endX, endY);
+            calculateSlope();
+            calculateYIntercept();
+        }
+
+        public BigDecimal calculateSlope(){
+            slope = new BigDecimal(start.x - end.x);
+            slope = slope.divide(new BigDecimal((start.y-end.y)));
+            return slope;
+        }
+
+        public BigDecimal calculateYIntercept(){
+            BigDecimal y = new BigDecimal(start.y);
+            BigDecimal temp = slope.multiply(new BigDecimal(start.x));
+            yIntercept = y.subtract(temp);
+            return yIntercept;
+        }
+
+        @Override
+        public String toString(){
+            return String.format("Point 1: (%d, %d), Point 2: (%d, %d), Slope: %f , Y-Intercept: %f"
+                    ,start.x,start.y,end.x,end.y,slope,yIntercept);
+        }
+    }
+
+    public static class Point{
+        int x;
+        int y;
+
+        public Point(int x, int y) {
+            this.x = x;
+            this.y = y;
+        }
+    }
+
+
+
+    @Test
+    public void testIntersection(){
+        Line lineOne = new Line(1,1,3,3);
+        Line lineTwo = new Line(3,1,1,3);
+        determineIntersection(lineOne,lineTwo);
+        System.out.println(lineOne);
+    }
+
+
+/**
     @Test
     public void testWordFrequency(){
         String word = readFile("./resources/alice.txt");
         System.out.printf("Alice found %d times\n", wordFrequency(word,"Alice"));
     }
 
-/**
+
     @Test
     public void testSwap(){
         IntWrapper one = new IntWrapper(10);
