@@ -83,4 +83,14 @@ public class HighestProduct {
         ///System.out.printf("Expected: %d, Result: %d\n", expected, result);
     }
 
+
+
+    public int highestProductOfThree(int[] numbers){
+        int total = 0;
+
+
+
+        return total;
+    }
+
 }

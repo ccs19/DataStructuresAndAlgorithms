@@ -10,6 +10,11 @@ public class Notes {
      *
      * https://www.interviewcake.com/question/java/find-in-ordered-set
      * Binary search -- Write a binary search on a sorted array.
+     *
+     * https://www.interviewcake.com/question/java/balanced-binary-tree
+     * Write an iterative solution. Depth first search = stack.
+     *
+     * https://www.interviewcake.com/question/java/reverse-words
      */
 
 }

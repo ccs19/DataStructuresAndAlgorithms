@@ -2,6 +2,8 @@ package com.interviewcake;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.Arrays;
+
 public class CoinDenominations {
 
     /**
@@ -47,12 +49,76 @@ public class CoinDenominations {
 
     @Test
     public void testNumberOfWays(){
-        int amount1 = 4;
-        int[] denominations1 = new int[]{1,2,3,25};
-        print(4, changePossibilitiesBottomUp(amount1,denominations1));
+        int amount1 = 5;
+        int[] denominations1 = new int[]{1,2,3,4,5};
+        print(1, _checkDenominations(amount1,denominations1));
     }
 
     private void print(int expected, int actual){
         System.out.printf("Expected: %d; Actual: %d\n",expected,actual);
+    }
+
+    private int checkDenominations(int amount, int[] denominations){
+        if(amount == 0) return 0;
+        //return _checkDenominations(amount, denominations, 0);
+        return 0;
+    }
+
+    private int _checkDenominations(int amount, int[] denominations) {
+        int result[] = new int[amount+1];
+        result[0] = 1;
+        for(int i = 0; i < denominations.length; i++){
+            int coin = denominations[i];
+            int currentAmount = coin;
+            while(currentAmount <= amount){
+                if(currentAmount >= coin){
+                    result[currentAmount] += result[currentAmount-coin];
+                }
+                currentAmount++;
+            }
+        }
+        return result[amount];
+    }
+
+    public static int changePossibilitiesTopDown(int amount, int[] denominations) {
+        return changePossibilitiesTopDown(amount, denominations, 0);
+    }
+
+    private static int changePossibilitiesTopDown(int amountLeft, int[] denominations, int currentIndex) {
+
+        // base cases:
+        // we hit the amount spot on. yes!
+        if (amountLeft == 0) {
+            System.out.println("Made combination");
+            return 1;
+        }
+
+        // we overshot the amount left (used too many coins)
+        if (amountLeft < 0) {
+            return 0;
+        }
+
+        // we're out of denominations
+        if (currentIndex == denominations.length) {
+            return 0;
+        }
+
+        System.out.println(String.format("checking ways to make %d with %s",
+                amountLeft, Arrays.toString(Arrays.copyOfRange(denominations,
+                        currentIndex, denominations.length))));
+
+        // choose a current coin
+        int currentCoin = denominations[currentIndex];
+
+        // see how many possibilities we can get
+        // for each number of times to use currentCoin
+        int numPossibilities = 0;
+        while (amountLeft >= 0) {
+            numPossibilities += changePossibilitiesTopDown(amountLeft, denominations,
+                    currentIndex + 1);
+            amountLeft -= currentCoin;
+        }
+
+        return numPossibilities;
     }
 }
